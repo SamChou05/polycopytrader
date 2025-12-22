@@ -122,14 +122,30 @@ class Monitor:
         taker = event.get('taker', '').lower()
         
         if self.target_address in [maker, taker]:
-            print(f"Trade detected via {source}: {event}")
+            # Calculate latency
+            event_timestamp = event.get('timestamp')
+            now_ms = int(time.time() * 1000)
+            
+            if event_timestamp:
+                # Handle both seconds and milliseconds timestamps
+                if event_timestamp < 10000000000:  # Seconds
+                    event_timestamp_ms = event_timestamp * 1000
+                else:  # Already milliseconds
+                    event_timestamp_ms = event_timestamp
+                    
+                latency_ms = now_ms - event_timestamp_ms
+                print(f"⚡ Trade detected via {source} | Latency: {latency_ms}ms")
+            else:
+                print(f"Trade detected via {source}: (no timestamp)")
+            
             # Construct trade object
             trade = {
                 'asset': event.get('asset'),
                 'side': 'BUY' if self.target_address == taker else 'SELL', # Simplified
                 'size': event.get('size'),
                 'price': event.get('price'),
-                'timestamp': event.get('timestamp')
+                'timestamp': event.get('timestamp'),
+                'latency_ms': latency_ms if event_timestamp else None
             }
             self.callback(trade)
 
