@@ -26,21 +26,25 @@ class Monitor:
         self.poll_thread.start()
 
     def _run_ws(self):
-        # RTDS WebSocket connection
-        # Note: Subscribing to specific user activity might not be fully supported publicly
-        # as per PRD, so we might need to subscribe to 'activity' and filter.
-        # For this implementation, we'll try a general subscription and filter client-side.
+        # Correct Polymarket RTDS WebSocket URL
+        rtds_url = "wss://ws-live-data.polymarket.com"
         
         def on_message(ws, message):
-            data = json.loads(message)
-            # Parse message and check if it involves target_address
-            # This is a simplified handler. Real RTDS messages need specific parsing.
-            # Assuming 'orders_matched' event structure.
-            if isinstance(data, list):
-                for event in data:
-                    self._process_event(event)
-            else:
-                self._process_event(data)
+            try:
+                data = json.loads(message)
+                # RTDS message structure: { topic, type, timestamp, payload }
+                # We are interested in 'activity' topic with 'orders_matched' type
+                topic = data.get('topic')
+                msg_type = data.get('type')
+                payload = data.get('payload', {})
+                
+                if topic == 'activity' and msg_type == 'orders_matched':
+                    self._process_event(payload)
+                elif isinstance(data, list):
+                    for event in data:
+                        self._process_event(event)
+            except json.JSONDecodeError:
+                pass # Ignore non-JSON messages (like PONG)
 
         def on_error(ws, error):
             print(f"WS Error: {error}")
@@ -53,16 +57,36 @@ class Monitor:
 
         def on_open(ws):
             print("WS Opened")
-            # Subscribe command
+            # Correct subscription format per Polymarket docs
             sub_msg = {
-                "type": "subscribe",
-                "channel": "activity", # Hypothetical channel
-                "params": {}
+                "action": "subscribe",
+                "subscriptions": [
+                    {
+                        "topic": "activity",
+                        "type": "orders_matched",
+                        # Optional: For user-specific activity, use gamma_auth
+                        "gamma_auth": {
+                            "address": self.target_address
+                        }
+                    }
+                ]
             }
             ws.send(json.dumps(sub_msg))
+            
+            # Start heartbeat thread
+            def send_ping():
+                while self.running and ws.sock and ws.sock.connected:
+                    try:
+                        ws.send("PING")
+                    except Exception:
+                        break
+                    time.sleep(5)
+            
+            ping_thread = threading.Thread(target=send_ping)
+            ping_thread.daemon = True
+            ping_thread.start()
 
-        # websocket.enableTrace(True)
-        self.ws = websocket.WebSocketApp(RTDS_URL,
+        self.ws = websocket.WebSocketApp(rtds_url,
                                          on_open=on_open,
                                          on_message=on_message,
                                          on_error=on_error,
