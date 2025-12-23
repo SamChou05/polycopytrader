@@ -91,5 +91,10 @@ def get_api_logger():
     return setup_logger("api")
 
 
+def get_logger(name: str = "copy_trader"):
+    """Generic logger getter for any module."""
+    return setup_logger(name)
+
+
 # Default application logger
 logger = setup_logger("copy_trader")

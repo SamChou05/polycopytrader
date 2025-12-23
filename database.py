@@ -34,6 +34,8 @@ class Wallet:
     id: Optional[int]
     address: str
     name: str
+    description: str = ""  # Why this wallet is being tracked
+    username: Optional[str] = None  # Auto-fetched from Polymarket
     enabled: bool = True
     created_at: Optional[str] = None
     
@@ -42,6 +44,8 @@ class Wallet:
             "id": self.id,
             "address": self.address,
             "name": self.name,
+            "description": self.description,
+            "username": self.username,
             "enabled": self.enabled,
             "created_at": self.created_at,
         }
@@ -130,10 +134,22 @@ class Database:
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     address TEXT UNIQUE NOT NULL,
                     name TEXT NOT NULL,
+                    description TEXT DEFAULT '',
+                    username TEXT,
                     enabled INTEGER DEFAULT 1,
                     created_at TEXT DEFAULT CURRENT_TIMESTAMP
                 )
             """)
+            
+            # Add columns if they don't exist (migration for existing DBs)
+            try:
+                cursor.execute("ALTER TABLE wallets ADD COLUMN description TEXT DEFAULT ''")
+            except:
+                pass
+            try:
+                cursor.execute("ALTER TABLE wallets ADD COLUMN username TEXT")
+            except:
+                pass
             
             # Settings table
             cursor.execute("""
@@ -174,14 +190,14 @@ class Database:
     # Wallet Operations
     # ============================================
     
-    def add_wallet(self, address: str, name: str, enabled: bool = True) -> Wallet:
+    def add_wallet(self, address: str, name: str, description: str = "", username: str = None, enabled: bool = True) -> Wallet:
         """Add a new wallet to track."""
         with self.get_connection() as conn:
             cursor = conn.cursor()
             try:
                 cursor.execute(
-                    "INSERT INTO wallets (address, name, enabled) VALUES (?, ?, ?)",
-                    (address.lower(), name, int(enabled))
+                    "INSERT INTO wallets (address, name, description, username, enabled) VALUES (?, ?, ?, ?, ?)",
+                    (address.lower(), name, description, username, int(enabled))
                 )
                 conn.commit()
                 wallet_id = cursor.lastrowid
@@ -190,6 +206,8 @@ class Database:
                     id=wallet_id,
                     address=address.lower(),
                     name=name,
+                    description=description,
+                    username=username,
                     enabled=enabled
                 )
             except sqlite3.IntegrityError:
@@ -209,6 +227,8 @@ class Database:
                     id=row["id"],
                     address=row["address"],
                     name=row["name"],
+                    description=row["description"] if "description" in row.keys() else "",
+                    username=row["username"] if "username" in row.keys() else None,
                     enabled=bool(row["enabled"]),
                     created_at=row["created_at"]
                 )
@@ -228,6 +248,8 @@ class Database:
                     id=row["id"],
                     address=row["address"],
                     name=row["name"],
+                    description=row["description"] if "description" in row.keys() else "",
+                    username=row["username"] if "username" in row.keys() else None,
                     enabled=bool(row["enabled"]),
                     created_at=row["created_at"]
                 )

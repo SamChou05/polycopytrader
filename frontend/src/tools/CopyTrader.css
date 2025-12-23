@@ -1,0 +1,298 @@
+.copy-trader {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    gap: 12px;
+}
+
+/* Stats Bar */
+.stats-bar {
+    display: flex;
+    gap: 16px;
+    padding: 12px;
+    background: #1e1e1e;
+    border-radius: 6px;
+}
+
+.stat {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.stat-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    color: #666;
+    margin-bottom: 4px;
+}
+
+.stat-value {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.stat-value.highlight {
+    color: #0099ff;
+}
+
+.stat-value.positive {
+    color: #00cc66;
+}
+
+.stat-value.neutral {
+    color: #888;
+}
+
+/* Tab Navigation */
+.tab-nav {
+    display: flex;
+    gap: 4px;
+    border-bottom: 1px solid #333;
+    padding-bottom: 0;
+}
+
+.tab-btn {
+    padding: 10px 20px;
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: #888;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.tab-btn:hover {
+    color: #fff;
+}
+
+.tab-btn.active {
+    color: #0099ff;
+    border-bottom-color: #0099ff;
+}
+
+/* Tab Content */
+.tab-content {
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.activity-view {
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Sections */
+.section {
+    background: #252525;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.section.flex-1 {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    background: #1a1a1a;
+    font-size: 11px;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.add-btn {
+    width: 24px;
+    height: 24px;
+    border: none;
+    border-radius: 4px;
+    background: #0066cc;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.add-btn:hover {
+    background: #0077dd;
+}
+
+/* Wallets List */
+.wallets-list {
+    padding: 8px;
+}
+
+.empty-state {
+    padding: 16px;
+    text-align: center;
+    color: #666;
+    font-size: 12px;
+}
+
+.wallet-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 12px;
+    border-radius: 4px;
+    background: #1a1a1a;
+    margin-bottom: 4px;
+}
+
+.wallet-item.disabled {
+    opacity: 0.5;
+}
+
+.wallet-name {
+    font-weight: 500;
+    flex: 1;
+}
+
+.wallet-address {
+    font-family: monospace;
+    font-size: 11px;
+    color: #888;
+}
+
+/* Toggle Switch */
+.toggle {
+    position: relative;
+    width: 36px;
+    height: 20px;
+}
+
+.toggle input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.toggle-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: #333;
+    border-radius: 20px;
+    transition: 0.2s;
+}
+
+.toggle-slider::before {
+    position: absolute;
+    content: "";
+    height: 16px;
+    width: 16px;
+    left: 2px;
+    bottom: 2px;
+    background: white;
+    border-radius: 50%;
+    transition: 0.2s;
+}
+
+.toggle input:checked+.toggle-slider {
+    background: #00cc66;
+}
+
+.toggle input:checked+.toggle-slider::before {
+    transform: translateX(16px);
+}
+
+/* Trades Table */
+.trades-container {
+    flex: 1;
+    overflow: auto;
+}
+
+.trades-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+}
+
+.trades-table th {
+    text-align: left;
+    padding: 8px 12px;
+    background: #1a1a1a;
+    color: #888;
+    font-size: 10px;
+    font-weight: 500;
+    text-transform: uppercase;
+    position: sticky;
+    top: 0;
+}
+
+.trades-table td {
+    padding: 8px 12px;
+    border-bottom: 1px solid #252525;
+}
+
+.trades-table tr:hover {
+    background: #1e1e1e;
+}
+
+.empty-row td {
+    text-align: center;
+    color: #666;
+    padding: 24px;
+}
+
+.market-cell {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.market-title {
+    font-weight: 500;
+}
+
+.market-outcome {
+    font-size: 10px;
+    color: #888;
+}
+
+.buy {
+    color: #00cc66;
+}
+
+.sell {
+    color: #cc3333;
+}
+
+.copied {
+    color: #00cc66;
+}
+
+.skipped {
+    color: #ccaa00;
+}
+
+.new-trade {
+    animation: flash 0.5s ease-out;
+}
+
+@keyframes flash {
+    0% {
+        background: rgba(0, 204, 204, 0.3);
+    }
+
+    100% {
+        background: transparent;
+    }
+}

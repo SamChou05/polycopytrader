@@ -1,0 +1,184 @@
+.tool-window {
+    display: flex;
+    flex-direction: column;
+    background: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    transition: box-shadow 0.2s ease;
+}
+
+.tool-window.active {
+    border-color: #0066cc;
+    box-shadow: 0 8px 32px rgba(0, 102, 204, 0.4);
+}
+
+.tool-window.maximized {
+    border-radius: 0;
+    border: none;
+}
+
+.tool-window.dragging {
+    opacity: 0.9;
+    cursor: move;
+}
+
+/* Title Bar */
+.tool-window-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    background: linear-gradient(180deg, #2a2a2a 0%, #1e1e1e 100%);
+    border-bottom: 1px solid #333;
+    cursor: move;
+    user-select: none;
+}
+
+.tool-window-title {
+    font-size: 12px;
+    font-weight: 600;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.tool-window.active .tool-window-title {
+    color: #fff;
+}
+
+.tool-window-controls {
+    display: flex;
+    gap: 4px;
+}
+
+.control-btn {
+    width: 24px;
+    height: 24px;
+    border: none;
+    border-radius: 4px;
+    background: #333;
+    color: #888;
+    font-size: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s ease;
+}
+
+.control-btn:hover {
+    background: #444;
+    color: #fff;
+}
+
+.control-btn.settings:hover {
+    background: #0066cc;
+}
+
+.control-btn.minimize:hover {
+    background: #444;
+}
+
+.control-btn.maximize:hover {
+    background: #0066cc;
+}
+
+.control-btn.close:hover {
+    background: #cc3333;
+}
+
+/* Content */
+.tool-window-content {
+    flex: 1;
+    overflow: auto;
+    padding: 12px;
+    background: #141414;
+}
+
+/* Resize Handles */
+.resize-handle {
+    position: absolute;
+    background: transparent;
+}
+
+.resize-n {
+    top: 0;
+    left: 10px;
+    right: 10px;
+    height: 6px;
+    cursor: n-resize;
+}
+
+.resize-s {
+    bottom: 0;
+    left: 10px;
+    right: 10px;
+    height: 6px;
+    cursor: s-resize;
+}
+
+.resize-e {
+    right: 0;
+    top: 10px;
+    bottom: 10px;
+    width: 6px;
+    cursor: e-resize;
+}
+
+.resize-w {
+    left: 0;
+    top: 10px;
+    bottom: 10px;
+    width: 6px;
+    cursor: w-resize;
+}
+
+.resize-ne {
+    top: 0;
+    right: 0;
+    width: 12px;
+    height: 12px;
+    cursor: ne-resize;
+}
+
+.resize-nw {
+    top: 0;
+    left: 0;
+    width: 12px;
+    height: 12px;
+    cursor: nw-resize;
+}
+
+.resize-se {
+    bottom: 0;
+    right: 0;
+    width: 12px;
+    height: 12px;
+    cursor: se-resize;
+}
+
+.resize-sw {
+    bottom: 0;
+    left: 0;
+    width: 12px;
+    height: 12px;
+    cursor: sw-resize;
+}
+
+/* Resize handle visibility on hover */
+.tool-window:hover .resize-handle {
+    background: transparent;
+}
+
+.tool-window.active .resize-se::after {
+    content: '';
+    position: absolute;
+    bottom: 4px;
+    right: 4px;
+    width: 8px;
+    height: 8px;
+    border-right: 2px solid #444;
+    border-bottom: 2px solid #444;
+}

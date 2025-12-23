@@ -1,0 +1,327 @@
+.app-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background: linear-gradient(180deg, #0066cc 0%, #004999 100%);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    height: 60px;
+    position: relative;
+    z-index: 10000;
+}
+
+.header-left,
+.header-right {
+    min-width: 200px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.header-right {
+    justify-content: flex-end;
+}
+
+.header-center {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+/* Status Indicator */
+.status-indicator {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.status-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+}
+
+.status-dot.online {
+    background: #00cc66;
+    box-shadow: 0 0 10px #00cc66;
+}
+
+.status-dot.offline {
+    background: #cc3333;
+    box-shadow: 0 0 10px #cc3333;
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.5;
+    }
+}
+
+.status-text {
+    font-size: 11px;
+    font-weight: 600;
+    color: white;
+    letter-spacing: 1px;
+}
+
+/* App Title */
+.app-title {
+    font-size: 16px;
+    font-weight: bold;
+    color: white;
+    letter-spacing: 3px;
+    margin: 0;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* Dropdown Container */
+.dropdown-container {
+    position: relative;
+}
+
+.header-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+    color: white;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.header-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.dropdown-arrow {
+    font-size: 8px;
+    opacity: 0.7;
+}
+
+/* Dropdown Menu */
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    margin-top: 4px;
+    min-width: 200px;
+    background: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 4px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+    z-index: 10001;
+    overflow: hidden;
+}
+
+.layout-menu {
+    min-width: 220px;
+}
+
+.menu-section {
+    padding: 8px 0;
+}
+
+.section-title {
+    display: block;
+    padding: 4px 16px;
+    font-size: 10px;
+    font-weight: 600;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.menu-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 10px 16px;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 13px;
+    cursor: pointer;
+    text-align: left;
+    transition: background 0.15s ease;
+}
+
+.menu-item:hover:not(.disabled) {
+    background: #0066cc;
+}
+
+.menu-item.disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.menu-icon {
+    font-size: 14px;
+    width: 20px;
+    text-align: center;
+}
+
+.menu-label {
+    flex: 1;
+}
+
+.badge {
+    font-size: 9px;
+    padding: 2px 6px;
+    background: #333;
+    border-radius: 4px;
+    color: #888;
+    text-transform: uppercase;
+}
+
+.menu-divider {
+    height: 1px;
+    background: #333;
+    margin: 4px 0;
+}
+
+/* Preset Item */
+.preset-item {
+    padding: 0;
+    display: flex;
+}
+
+.preset-load {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 16px;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 13px;
+    cursor: pointer;
+    text-align: left;
+}
+
+.preset-load:hover {
+    background: #0066cc;
+}
+
+.preset-delete {
+    padding: 10px 12px;
+    background: none;
+    border: none;
+    color: #666;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.preset-delete:hover {
+    background: #cc3333;
+    color: white;
+}
+
+/* Mode Badge */
+.mode-badge {
+    padding: 6px 12px;
+    background: #ccaa00;
+    color: #000;
+    font-size: 10px;
+    font-weight: bold;
+    border-radius: 4px;
+    letter-spacing: 1px;
+}
+
+.mode-badge.live {
+    background: #00cc66;
+}
+
+/* Taskbar */
+.taskbar {
+    display: flex;
+    gap: 4px;
+}
+
+.taskbar-item {
+    padding: 6px 10px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+    color: white;
+    font-size: 11px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.taskbar-item:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* Save Dialog */
+.save-dialog {
+    background: #1a1a1a;
+    padding: 24px;
+    border-radius: 8px;
+    border: 1px solid #333;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+    min-width: 300px;
+}
+
+.save-dialog h3 {
+    margin: 0 0 16px;
+    font-size: 14px;
+    color: white;
+}
+
+.save-dialog input {
+    width: 100%;
+    padding: 10px 12px;
+    background: #252525;
+    border: 1px solid #333;
+    border-radius: 4px;
+    color: white;
+    font-size: 13px;
+    margin-bottom: 16px;
+}
+
+.save-dialog input:focus {
+    outline: none;
+    border-color: #0066cc;
+}
+
+.dialog-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+}
+
+.dialog-buttons button {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.dialog-buttons button:first-child {
+    background: #333;
+    color: white;
+}
+
+.dialog-buttons button.primary {
+    background: #0066cc;
+    color: white;
+}
+
+.dialog-buttons button:hover {
+    filter: brightness(1.2);
+}

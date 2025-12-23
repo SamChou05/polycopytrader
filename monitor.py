@@ -195,6 +195,24 @@ class Monitor:
             event: Raw event data from API
             source: Where the event came from ("ws" or "polling")
         """
+        # Create unique fingerprint for deduplication (works across ws and polling)
+        asset = event.get('asset', '')
+        timestamp = event.get('timestamp', '')
+        size = event.get('size', '')
+        price = event.get('price', '')
+        trade_fingerprint = f"{asset}:{timestamp}:{size}:{price}"
+        
+        # Check if we've already processed this trade
+        if trade_fingerprint in self.processed_trades:
+            return  # Skip duplicate
+        
+        # Add to processed set
+        self.processed_trades.add(trade_fingerprint)
+        
+        # Limit size of processed trades set to prevent memory issues
+        if len(self.processed_trades) > 1000:
+            self.processed_trades = set(list(self.processed_trades)[-500:])
+        
         # Extract addresses from event
         proxy_wallet = event.get('proxyWallet', '').lower()
         maker = event.get('maker', '').lower()
