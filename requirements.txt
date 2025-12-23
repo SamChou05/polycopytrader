@@ -4,3 +4,7 @@ requests
 web3
 python-dotenv
 pytest
+flask
+flask-socketio
+rich
+

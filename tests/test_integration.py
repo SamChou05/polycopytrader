@@ -69,16 +69,16 @@ def test_monitor_parsing_integration():
     # We need to mock websocket and requests
     
     callback = MagicMock()
-    monitor = Monitor(target_address="0xTarget", callback=callback)
+    monitor = Monitor("0xTarget", callback)  # Updated to use positional args
     
     # Simulate a raw RTDS event
     # Note: This structure depends on actual RTDS payload. 
     # Based on PRD: "orders_matched event within the activity topic"
-    # We'll use a hypothetical structure matching our Monitor._process_event logic
     raw_event = {
-        'maker': '0xTarget', # Target is maker
+        'maker': '0xTarget',  # Target is maker
         'taker': '0xOther',
         'asset': '0xAssetB',
+        'side': 'SELL',  # Maker is selling
         'size': 500.0,
         'price': 0.75,
         'timestamp': 1234567890
@@ -92,9 +92,7 @@ def test_monitor_parsing_integration():
     
     assert trade['asset'] == '0xAssetB'
     assert trade['size'] == 500.0
-    # If target is maker, and we assume standard maker/taker sides...
-    # Actually our monitor logic was: 'BUY' if target == taker else 'SELL'
-    # If target is maker, it's a SELL (providing liquidity? or just the other side)
-    # Let's verify the logic in Monitor.py:
-    # side = 'BUY' if self.target_address == taker else 'SELL'
-    assert trade['side'] == 'SELL' 
+    assert trade['side'] == 'SELL'
+    assert trade['wallet_address'] == '0xtarget'  # Normalized to lowercase
+
+

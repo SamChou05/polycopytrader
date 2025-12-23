@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Polymarket Copy Trader</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.min.js"></script>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="status-indicator">
+            <span id="status-dot" class="status-dot offline"></span>
+            <span id="status-text">CONNECTING...</span>
+        </div>
+        <h1 class="title">POLYMARKET COPY TRADER</h1>
+        <div class="mode-badge" id="mode-badge">DRY RUN</div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <!-- Target Panel -->
+            <div class="panel">
+                <div class="panel-header">TRACKING</div>
+                <div class="panel-content">
+                    <div class="info-row">
+                        <span class="label">TARGET</span>
+                        <span class="value" id="target-name">--</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">ADDRESS</span>
+                        <span class="value address" id="target-address">--</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">UPTIME</span>
+                        <span class="value" id="uptime">00:00:00</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats Panel -->
+            <div class="panel">
+                <div class="panel-header">STATISTICS</div>
+                <div class="panel-content">
+                    <div class="stat-row">
+                        <span class="label">Detected</span>
+                        <span class="value highlight" id="stat-detected">0</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="label">Copied</span>
+                        <span class="value positive" id="stat-copied">0</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="label">Skipped</span>
+                        <span class="value neutral" id="stat-skipped">0</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="label">Avg Latency</span>
+                        <span class="value highlight" id="stat-latency">0ms</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Trades Table -->
+        <section class="trades-section">
+            <div class="panel full-height">
+                <div class="panel-header">RECENT TRADES</div>
+                <div class="panel-content">
+                    <table class="trades-table">
+                        <thead>
+                            <tr>
+                                <th>TIME</th>
+                                <th>MARKET</th>
+                                <th>OUTCOME</th>
+                                <th>SIDE</th>
+                                <th>SIZE</th>
+                                <th>PRICE</th>
+                                <th>LATENCY</th>
+                                <th>STATUS</th>
+                            </tr>
+                        </thead>
+                        <tbody id="trades-body">
+                            <!-- Trades will be inserted here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <span>Press Ctrl+C in terminal to stop</span>
+        <span id="current-time"></span>
+    </footer>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>

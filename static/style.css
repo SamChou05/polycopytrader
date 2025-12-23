@@ -1,0 +1,220 @@
+/* Bloomberg-inspired dark theme */
+:root {
+    --bg-primary: #0a0a0a;
+    --bg-secondary: #141414;
+    --bg-panel: #1a1a1a;
+    --border-color: #2a2a2a;
+    --text-primary: #ffffff;
+    --text-secondary: #888888;
+    --accent-blue: #0066cc;
+    --accent-green: #00cc66;
+    --accent-red: #cc3333;
+    --accent-yellow: #ccaa00;
+    --accent-cyan: #00cccc;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Header */
+.header {
+    background: var(--accent-blue);
+    padding: 12px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.status-indicator {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.status-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+}
+
+.status-dot.online {
+    background: var(--accent-green);
+    box-shadow: 0 0 10px var(--accent-green);
+}
+
+.status-dot.offline {
+    background: var(--accent-red);
+    box-shadow: 0 0 10px var(--accent-red);
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+.title {
+    font-size: 18px;
+    font-weight: bold;
+    letter-spacing: 2px;
+}
+
+.mode-badge {
+    background: var(--accent-yellow);
+    color: #000;
+    padding: 4px 12px;
+    font-size: 12px;
+    font-weight: bold;
+    border-radius: 4px;
+}
+
+.mode-badge.live {
+    background: var(--accent-green);
+}
+
+/* Main Content */
+.main-content {
+    flex: 1;
+    display: flex;
+    padding: 16px;
+    gap: 16px;
+}
+
+.sidebar {
+    width: 280px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.trades-section {
+    flex: 1;
+}
+
+/* Panels */
+.panel {
+    background: var(--bg-panel);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+}
+
+.panel.full-height {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.panel-header {
+    background: var(--bg-secondary);
+    padding: 10px 16px;
+    font-size: 12px;
+    font-weight: bold;
+    color: var(--text-secondary);
+    border-bottom: 1px solid var(--border-color);
+    letter-spacing: 1px;
+}
+
+.panel-content {
+    padding: 16px;
+    flex: 1;
+    overflow: auto;
+}
+
+/* Info Rows */
+.info-row, .stat-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.info-row:last-child, .stat-row:last-child {
+    border-bottom: none;
+}
+
+.label {
+    color: var(--text-secondary);
+    font-size: 12px;
+}
+
+.value {
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.value.address {
+    font-size: 11px;
+    font-family: monospace;
+}
+
+.value.highlight { color: var(--accent-cyan); }
+.value.positive { color: var(--accent-green); }
+.value.negative { color: var(--accent-red); }
+.value.neutral { color: var(--accent-yellow); }
+
+/* Trades Table */
+.trades-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+
+.trades-table th {
+    text-align: left;
+    padding: 10px 8px;
+    color: var(--text-secondary);
+    font-size: 11px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.trades-table td {
+    padding: 10px 8px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.trades-table tr:hover {
+    background: var(--bg-secondary);
+}
+
+.trades-table .buy { color: var(--accent-green); }
+.trades-table .sell { color: var(--accent-red); }
+.trades-table .copied { color: var(--accent-green); }
+.trades-table .skipped { color: var(--accent-yellow); }
+
+.empty-row {
+    color: var(--text-secondary);
+    opacity: 0.3;
+}
+
+/* Footer */
+.footer {
+    background: var(--bg-secondary);
+    padding: 10px 24px;
+    display: flex;
+    justify-content: space-between;
+    color: var(--text-secondary);
+    font-size: 12px;
+    border-top: 1px solid var(--border-color);
+}
+
+/* Animations */
+@keyframes flash {
+    0% { background: var(--accent-cyan); }
+    100% { background: transparent; }
+}
+
+.flash {
+    animation: flash 0.5s ease-out;
+}
