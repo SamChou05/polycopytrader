@@ -101,30 +101,33 @@ def get_wallet(address: str):
 
 @wallets_bp.route('/wallets/<address>', methods=['PATCH'])
 def update_wallet(address: str):
-    """Update wallet properties (name, enabled)."""
+    """Update wallet properties (name, description, enabled)."""
     try:
         data = request.get_json()
         db = get_database()
         
-        # Update name if provided
-        if 'name' in data:
-            db.update_wallet_name(address, data['name'])
+        # Get current wallet
+        wallet = db.get_wallet(address)
+        if not wallet:
+            return jsonify({'error': 'Wallet not found'}), 404
         
-        # Update enabled status if provided
-        if 'enabled' in data:
-            db.set_wallet_enabled(address, data['enabled'])
+        # Update using the update_wallet method
+        name = data.get('name')
+        description = data.get('description')
+        enabled = data.get('enabled')
+        
+        db.update_wallet(address, name=name, description=description, enabled=enabled)
         
         # Return updated wallet
         wallet = db.get_wallet(address)
-        if wallet:
-            return jsonify({
-                'id': wallet.id,
-                'address': wallet.address,
-                'name': wallet.name,
-                'enabled': wallet.enabled,
-            })
-        else:
-            return jsonify({'error': 'Wallet not found'}), 404
+        return jsonify({
+            'id': wallet.id,
+            'address': wallet.address,
+            'name': wallet.name,
+            'description': wallet.description,
+            'username': wallet.username,
+            'enabled': wallet.enabled,
+        })
     except Exception as e:
         logger.error(f"Error updating wallet: {e}")
         return jsonify({'error': str(e)}), 500

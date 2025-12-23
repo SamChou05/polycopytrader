@@ -27,7 +27,8 @@ class Monitor:
     def __init__(
         self, 
         target_addresses: List[str] | str, 
-        callback: Callable[[Dict[str, Any]], None]
+        callback: Callable[[Dict[str, Any]], None],
+        initial_fingerprints: Set[str] = None
     ):
         """
         Initialize the monitor.
@@ -35,6 +36,7 @@ class Monitor:
         Args:
             target_addresses: Single address or list of addresses to monitor
             callback: Function to call when a trade is detected
+            initial_fingerprints: Optional set of trade fingerprints to skip (from database)
         """
         # Normalize to list of lowercase addresses
         if isinstance(target_addresses, str):
@@ -44,7 +46,7 @@ class Monitor:
         self.callback = callback
         self.ws: Optional[websocket.WebSocketApp] = None
         self.running = False
-        self.processed_trades: Set[str] = set()  # For deduplication
+        self.processed_trades: Set[str] = initial_fingerprints or set()  # For deduplication
         
         logger.info(f"Monitor initialized for {len(self.target_addresses)} address(es)")
     

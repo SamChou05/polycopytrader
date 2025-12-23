@@ -126,20 +126,21 @@ def get_tool_settings(tool_id: str):
 def save_tool_settings(tool_id: str):
     """Save all settings for a specific tool."""
     try:
+        import json
         data = request.get_json()
-        settings = data.get('settings', {})
         
         db = get_database()
-        category = f'tool:{tool_id}'
         
-        for key, value in settings.items():
-            db.set_setting(f'{tool_id}:{key}', value, category)
+        # Store as a single JSON blob for simplicity
+        settings_key = f'{tool_id}_settings'
+        db.set_setting(settings_key, json.dumps(data), f'tool:{tool_id}')
         
         logger.info(f"Saved settings for tool: {tool_id}")
         return jsonify({
             'tool_id': tool_id,
-            'settings': settings,
+            'settings': data,
         })
     except Exception as e:
         logger.error(f"Error saving tool settings: {e}")
         return jsonify({'error': str(e)}), 500
+

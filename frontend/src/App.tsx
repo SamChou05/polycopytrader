@@ -49,12 +49,18 @@ function App() {
     }));
   }, []);
 
-  // Open Copy Trader by default on first load
+  // Open Copy Trader by default on first load (maximized)
+  const initializedRef = React.useRef(false);
   React.useEffect(() => {
-    if (windows.length === 0) {
-      handleOpenTool('copy-trader');
+    if (!initializedRef.current && windows.length === 0) {
+      initializedRef.current = true;
+      openWindow('copy-trader', 'COPY TRADER', {
+        isMaximized: true,
+        position: { x: 0, y: 0 },
+        size: { width: window.innerWidth, height: window.innerHeight - 60 },
+      });
     }
-  }, []);
+  }, [windows.length, openWindow]);
 
   // Get settings for open tool
   const settingsTool = settingsOpen ? getToolById(settingsOpen) : null;

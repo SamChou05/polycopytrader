@@ -1,66 +1,87 @@
 import os
+import logging
 from py_clob_client.client import ClobClient
-from py_clob_client.clob_types import OrderArgs, OrderType
-from py_clob_client.constants import POLYGON
+from py_clob_client.clob_types import OrderArgs, ApiCreds
 from decimal import Decimal
 from config import PRIVATE_KEY, API_KEY, API_SECRET, API_PASSPHRASE, CHAIN_ID, RPC_URL
 
 class Executor:
     def __init__(self, dry_run=False):
         self.dry_run = dry_run
-        self.client = self._init_client()
+        self.client = None
+        self._creds_set = False
 
-    def _init_client(self):
+    def _init_client(self, api_key=None, api_secret=None, api_passphrase=None):
         if not PRIVATE_KEY:
             raise ValueError("PRIVATE_KEY not set in environment")
-            
-        # Initialize CLOB client
-        # Note: In a real scenario, we might need to derive L2 keys if not provided,
-        # but for now we assume L2 keys are present or we use L1 for everything if supported.
-        # The PRD mentions L2 is standard.
         
-        return ClobClient(
+        # Create credentials object if provided
+        creds = None
+        if api_key and api_secret and api_passphrase:
+            creds = ApiCreds(api_key=api_key, api_secret=api_secret, api_passphrase=api_passphrase)
+            logging.info("Initializing CLOB client with API credentials")
+        else:
+            logging.info("Initializing CLOB client without credentials (read-only)")
+            
+        # Initialize CLOB client with credentials at init time
+        client = ClobClient(
             host="https://clob.polymarket.com",
+            chain_id=137,  # Polygon Mainnet
             key=PRIVATE_KEY,
-            chain_id=CHAIN_ID,
-            signature_type=1, # 1 for private key, 2 for derived
-            funder=POLYGON, # Use Polygon network
+            creds=creds,
+            signature_type=0,  # EOA wallet
         )
+        
+        return client
 
     def set_api_creds(self, key, secret, passphrase):
-        # py-clob-client 0.32.0 might handle this differently.
-        # Checking source or docs would be ideal, but based on error:
-        # TypeError: ClobClient.set_api_creds() takes 2 positional arguments but 4 were given
-        # It likely expects an object or just one argument.
-        # However, looking at common usage, it might be create_or_derive_api_creds or similar.
-        # Let's try to construct the creds object if needed, or check if we can pass them differently.
-        # Actually, the error says "takes 2 positional arguments but 4 were given".
-        # self is 1. So it takes 1 other argument. Likely an ApiCreds object.
-        from py_clob_client.clob_types import ApiCreds
-        creds = ApiCreds(api_key=key, api_secret=secret, api_passphrase=passphrase)
-        self.client.set_api_creds(creds)
+        """Initialize client with API credentials for authenticated trading."""
+        self.client = self._init_client(key, secret, passphrase)
+        self._creds_set = True
 
     def place_order(self, token_id, side, price, size):
         """
-        Places an FOK (Fill-Or-Kill) order.
+        Places a limit order on Polymarket.
+        Returns dict with success status and details.
         """
         if self.dry_run:
-            print(f"[DRY RUN] Placing order: Token={token_id}, Side={side}, Price={price}, Size={size}")
-            return {"orderID": "dry-run-id", "status": "simulated"}
+            logging.info(f"[DRY RUN] Would place {side} order: {size:.4f} shares @ ${price:.2f}")
+            return {"success": True, "orderID": "dry-run-id", "status": "simulated"}
+        
+        if self.client is None:
+            logging.warning("Client not initialized, initializing now...")
+            self.client = self._init_client()
 
         try:
+            logging.info(f"Creating order: {side} {size:.4f} @ ${price:.2f} for token {token_id[:20]}...")
+            
             order_args = OrderArgs(
                 price=price,
                 size=size,
                 side=side,
                 token_id=token_id,
             )
-            # Using FOK as per PRD recommendation for copy trading
-            resp = self.client.create_and_post_order(order_args, order_type=OrderType.FOK)
-            return resp
+            
+            resp = self.client.create_and_post_order(order_args)
+            
+            if resp:
+                logging.info(f"Order placed successfully: {resp}")
+                return {"success": True, "response": resp}
+            else:
+                logging.warning("Order returned empty response")
+                return {"success": False, "error": "No response from server"}
+                
         except Exception as e:
-            print(f"Error placing order: {e}")
-            return None
+            error_str = str(e)
+            
+            # Detect Cloudflare blocks
+            if "403" in error_str and ("cloudflare" in error_str.lower() or "blocked" in error_str.lower()):
+                logging.error("⛔ Cloudflare is blocking this IP. Try a different VPN server.")
+                return {"success": False, "error": "Cloudflare block - try different VPN server"}
+            
+            # Log and return other errors
+            logging.error(f"Order failed: {error_str[:200]}")
+            return {"success": False, "error": error_str[:500]}
 
     def get_market_price(self, token_id):
         # Helper to get current mid-price or best ask/bid

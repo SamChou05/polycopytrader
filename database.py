@@ -256,7 +256,7 @@ class Database:
                 for row in rows
             ]
     
-    def update_wallet(self, address: str, name: str = None, enabled: bool = None) -> bool:
+    def update_wallet(self, address: str, name: str = None, description: str = None, enabled: bool = None) -> bool:
         """Update wallet properties."""
         with self.get_connection() as conn:
             cursor = conn.cursor()
@@ -266,6 +266,9 @@ class Database:
             if name is not None:
                 updates.append("name = ?")
                 params.append(name)
+            if description is not None:
+                updates.append("description = ?")
+                params.append(description)
             if enabled is not None:
                 updates.append("enabled = ?")
                 params.append(int(enabled))
